@@ -1,5 +1,5 @@
 <?php
-    class CategoryModel extends Db{
+    class CategoryModel extends DB{
         //lấy tất cả sản phẩm
         public function getCategories(){
             //2.Viết câu SQL
