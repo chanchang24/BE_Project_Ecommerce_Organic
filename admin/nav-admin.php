@@ -27,7 +27,7 @@
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         Dashboard
                     </a>
-                    <a class="nav-link " href="${pageContext.request.contextPath}/admin/product-management">
+                    <a class="nav-link " href="product-management.php">
                         <i class="fas fa-table"></i>&nbsp;Quản lý sản phẩm 
                     </a>
                     <a class="nav-link " href="${pageContext.request.contextPath}/admin/category-management">

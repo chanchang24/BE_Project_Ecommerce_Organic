@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <c:set var="title" value="Quản lý danh mục" scope="request" />
+   <?php $title = "Dashboard"  ?>
     <?php include("head-admin.php"); ?>
 </head>
 
