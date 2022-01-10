@@ -7,7 +7,7 @@ session_start();
 $_SESSION['previousPageProduct'] = $_SERVER['REQUEST_URI'];
 $perPage = 3;
 $currentPage = 1;
-$productCount = 0;
+$count = 0;
 $query = "";
 $q = "";
 $fmt = numfmt_create('vi_VN', NumberFormatter::CURRENCY);
@@ -19,10 +19,10 @@ if (isset($_GET['q'])) {
     $q = $_GET['q'];
     $query .= '&q=' . $q;
     $products = $producModel->getProductsByKey($currentPage, $perPage, $q);
-    $productCount = $producModel->getProductsCountByKey($currentPage, $perPage, $q);
+    $count = $producModel->getProductsCountByKey($currentPage, $perPage, $q);
 } else {
     $products = $producModel->getProducts($currentPage, $perPage);
-    $productCount = $producModel->getProductCount();
+    $count = $producModel->getProductCount();
 }
 
 ?>
@@ -75,14 +75,14 @@ if (isset($_GET['q'])) {
                                 </div>
 
                                 <div class="col-4">
-                                    <div class="d-inline-block float-end"><a class="btn btn-success btn-sm" href="./add-product">Thêm sản
+                                    <div class="d-inline-block float-end"><a class="btn btn-success btn-sm" href="AddProduct.php">Thêm sản
                                             phẩm</a></div>
                                 </div>
                             </div>
                             <table class="table table-bordered caption-top table-sm">
                                 <caption>
-                                    Hiển thị các sản phẩm từ <?php $start =  ($currentPage - 1) * $perPage +1;  echo $productCount!=0?$start:0 ?> - <?php echo ($currentPage - 1) * $perPage + count($products) ?>
-                                    trong tổng số <?php echo $productCount ?> sản phẩm
+                                    Hiển thị các sản phẩm từ <?php $start =  ($currentPage - 1) * $perPage +1;  echo $count!=0?$start:0 ?> - <?php echo ($currentPage - 1) * $perPage + count($products) ?>
+                                    trong tổng số <?php echo $count ?> sản phẩm
                                 </caption>
 
                                 <thead>

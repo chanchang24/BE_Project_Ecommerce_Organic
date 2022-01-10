@@ -1,5 +1,5 @@
 <?php
-$maxPage = ceil($productCount / $perPage);
+$maxPage = ceil($count / $perPage);
 ?>
 <nav aria-label="Page navigation example">
     <ul class="pagination pagination-sm justify-content-center">

@@ -24,7 +24,7 @@ function loadMoreNewProduct() {
         renderNewProdcuts(newProducts);
 
     }
-    xhttp.open("POST", "LoadMoreNewProductServlet", true);
+    xhttp.open("POST", "./app/ajax/LoadMoreNewProduct.php", true);
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhttp.send(`pageNewProduct=${pageNewProduct}&numProduct=${numProduct}`);
     pageNewProduct++;
@@ -46,21 +46,26 @@ function renderNewProdcuts(newProducts) {
         html += `     <div class="col-lg-3 col-md-4 col-sm-6 mix animate__animated animate__fadeInUp  ">
         <div class="featured__item">
             <div class="featured__item__pic set-bg" style="border: 1px #d2cfcf61 solid;"
-                data-setbg="./public/images/product/${product.image}">
+                data-setbg="./public/images/products/${product.product_main_image}">
                 <ul class="featured__item__pic__hover">
-                    <li><a href="/shop-details?id=${product.id}" title="Xem chi tiết"><i
+                    <li><a href="shop-details.php?id=${product.id}" title="Xem chi tiết"><i
                                 class="fa fa-info-circle"></i></a></li> `
-        if (product.total != '0') {
+        if (product.product_quantily != '0') {
             html += ` <li> <a data-id="${product.id}" title="Thêm vào giỏ" style="cursor: pointer" class="btn-add-to-cart"><i class="fa fa-shopping-cart"></i></a></li >`
         }
         html += `  </ul>
             </div>
             <div class="featured__item__text">
-                <h6><a href="#">${product.name}</a></h6>
-                <h5>${product.price.toLocaleString('vi')}₫</h5>
-            </div>
-        </div>
-    </div>`
+                <h6><a href="#">${product.product_name}</a></h6>`
+        if (product.product_price > product.product_promotional_price) {
+            html += `        <h5 class="text-danger"> ${product.product_promotional_price.toLocaleString('vi')}₫</h5><span class="text-muted" style="text-decoration-line: line-through;">${product.price.toLocaleString('vi')}₫</span>`
+        } else {
+            html += `<h5>${product.product_price.toLocaleString('vi')}₫</h5>`
+        }
+        html += `  
+                    </div>
+                </div>
+            </div>`
     });
     listNewProduct.innerHTML += html;
     btnLoadMore.innerText = "Xem thêm";
@@ -92,13 +97,13 @@ function addCart() {
                     style: {
                         background: "linear-gradient(to right, #7fad39, #96c93d)",
                     },
-                    onClick: function () { 
+                    onClick: function () {
                     }
                 }).showToast();
                 productCart.innerText = obj.amount.toLocaleString('vi') + '₫';
                 totalItemCart.innerText = obj.total;
             }
-            xhttp.open("POST", "AddToCart", true);
+            xhttp.open("POST", "./app/ajax/AddToCart.php", true);
             xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhttp.send("idadd=" + id);
         })

@@ -54,7 +54,7 @@ if (isset($_POST['product'])) {
                         </div>
                         <div class="card-body">
                             <a href="<?php echo isset($_SESSION["previousPageProduct"]) ? $_SESSION["previousPageProduct"] : "product-management"; ?>" class="btn btn-primary btn-sm mb-4"><i class="fas fa-arrow-left"></i> Trang quản lí sản phẩm</a>
-                            <form class="row g-3" action="add-product" enctype="multipart/form-data" method="post">
+                            <form class="row g-3" enctype="multipart/form-data" method="post">
                                 <?php if (isset($_SESSION["message"])) { ?>
                                     <div class="col-md-12">
                                         <div class="alert alert-danger" role="alert">

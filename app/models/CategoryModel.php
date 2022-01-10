@@ -8,6 +8,11 @@ class CategoryModel extends DB
         $sql = parent::$connection->prepare("SELECT * FROM `categories` WHERE 1 ORDER BY category_name ");
         return parent::select($sql);
     }
+    public function getCategoriesForNav()
+    {
+        $sql = parent::$connection->prepare("SELECT * FROM `categories` WHERE 1 ORDER BY category_name Limit 8");
+        return parent::select($sql);
+    }
     public function getCategoryByProduct($idProduct)
     {
         $sql = parent::$connection->prepare("SELECT `category_name` FROM `categories` INNER JOIN category_product ON categories.id = category_product.category_id WHERE category_product.product_id = ?;");
