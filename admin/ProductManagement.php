@@ -1,7 +1,7 @@
 <?php
 require_once '../config/database.php';
-spl_autoload_register(function ($classname) {
-    require '../app/models/' . $classname . '.php';
+spl_autoload_register(function ($class_name) {
+    require '../app/models/' . $class_name . '.php';
 });
 session_start();
 $_SESSION['previousPageProduct'] = $_SERVER['REQUEST_URI'];
@@ -10,19 +10,19 @@ $currentPage = 1;
 $productCount = 0;
 $query = "";
 $q = "";
-$fmt = numfmt_create('vi_VN', NumberFormatter::CURRENCY);
-$producModel = new ProductModel();
+// $fmt = numfmt_create('vi_VN', NumberFormatter::CURRENCY);
+$productModel = new ProductModel();
 if (isset($_GET['page'])) {
     $currentPage = $_GET['page'];
 }
 if (isset($_GET['q'])) {
     $q = $_GET['q'];
     $query .= '&q=' . $q;
-    $products = $producModel->getProductsByKey($currentPage, $perPage, $q);
-    $productCount = $producModel->getProductsCountByKey($currentPage, $perPage, $q);
+    $products = $productModel->getProductsByKey($currentPage, $perPage, $q);
+    $productCount = $productModel->getProductsCountByKey($currentPage, $perPage, $q);
 } else {
-    $products = $producModel->getProducts($currentPage, $perPage);
-    $productCount = $producModel->getProductCount();
+    $products = $productModel->getProducts($currentPage, $perPage);
+    $productCount = $productModel->getProductCount();
 }
 
 ?>
@@ -75,13 +75,14 @@ if (isset($_GET['q'])) {
                                 </div>
 
                                 <div class="col-4">
-                                    <div class="d-inline-block float-end"><a class="btn btn-success btn-sm" href="./add-product">Thêm sản
+                                    <div class="d-inline-block float-end"><a class="btn btn-success btn-sm" href="./AddProduct.php">Thêm sản
                                             phẩm</a></div>
                                 </div>
                             </div>
                             <table class="table table-bordered caption-top table-sm">
                                 <caption>
-                                    Hiển thị các sản phẩm từ <?php $start =  ($currentPage - 1) * $perPage +1;  echo $productCount!=0?$start:0 ?> - <?php echo ($currentPage - 1) * $perPage + count($products) ?>
+                                    Hiển thị các sản phẩm từ <?php $start =  ($currentPage - 1) * $perPage + 1;
+                                                                echo $productCount != 0 ? $start : 0 ?> - <?php echo ($currentPage - 1) * $perPage + count($products) ?>
                                     trong tổng số <?php echo $productCount ?> sản phẩm
                                 </caption>
 
@@ -107,10 +108,12 @@ if (isset($_GET['q'])) {
                                                 </div>
                                             </td>
                                             <td class="text-end">
-                                                <?php echo numfmt_format_currency($fmt, $product['product_price'], "VND"); ?>
+                                                <!-- <php echo numfmt_format_currency($product['product_price'], "VND",$fmt); ?> -->
+                                                <?php echo $product['product_price'] ?>
+
                                             </td>
                                             <td class="text-end">
-                                                <?php echo $product['product_quantily'] ?>
+                                                <?php echo $product['product_quantity'] ?>
                                             </td>
                                             <td style="max-width: 80px;">
                                                 <?php echo $product['product_create_at'] ?>

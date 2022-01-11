@@ -54,7 +54,7 @@ if (isset($_POST['product'])) {
                         </div>
                         <div class="card-body">
                             <a href="<?php echo isset($_SESSION["previousPageProduct"]) ? $_SESSION["previousPageProduct"] : "product-management"; ?>" class="btn btn-primary btn-sm mb-4"><i class="fas fa-arrow-left"></i> Trang quản lí sản phẩm</a>
-                            <form class="row g-3" action="add-product" enctype="multipart/form-data" method="post">
+                            <form class="row g-3" action="AddProduct.php" enctype="multipart/form-data" method="post">
                                 <?php if (isset($_SESSION["message"])) { ?>
                                     <div class="col-md-12">
                                         <div class="alert alert-danger" role="alert">
@@ -74,7 +74,7 @@ if (isset($_POST['product'])) {
                                 </div>
                                 <div class="col-6">
                                     <label for="amountProduct" class="form-label">Số Lượng Sản Phẩm</label>
-                                    <input type="number" class="form-control" name="product[product_quantily]" min="0" id="amountProduct" value="0" placeholder="0" required>
+                                    <input type="number" class="form-control" name="product[product_quantity]" min="0" id="amountProduct" value="0" placeholder="0" required>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Danh Mục Sản Phẩm</label>

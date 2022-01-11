@@ -101,7 +101,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                                     <div class="col-6">
                                         <label for="amountProduct" class="form-label">Số Lượng Sản
                                             Phẩm</label>
-                                        <input type="number" class="form-control" name="product[product_quantily]" min="0" value="<?php echo $productUpdate['product_quantily'] ?>" id="amountProduct" step="1" value="0" placeholder="0" required>
+                                        <input type="number" class="form-control" name="product[product_quantity]" min="0" value="<?php echo $productUpdate['product_quantity'] ?>" id="amountProduct" step="1" value="0" placeholder="0" required>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Danh Mục Sản Phẩm</label>

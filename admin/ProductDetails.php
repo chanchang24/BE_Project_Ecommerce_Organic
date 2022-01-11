@@ -113,7 +113,7 @@ if (isset($_GET['id'])) {
                                                 <?php  echo numfmt_format_currency($fmt, $product['product_promotional_price'], "VND"); ?>
                                             </h4>
                                             <h5 class="fw-bold my-4 fst-italic">
-                                            Số lượng: <?php echo $product['product_quantily'] ?>
+                                            Số lượng: <?php echo $product['product_quantity'] ?>
                                             </h5>
                                             <h6 class="fw-light fst-italic">
                                                 Thời gian thêm sản phẩm: <span class="fw-normal">

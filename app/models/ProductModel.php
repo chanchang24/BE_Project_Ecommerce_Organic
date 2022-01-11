@@ -10,8 +10,8 @@ class ProductModel extends DB
     }
     public function insertProduct($product)
     {
-        $sql = parent::$connection->prepare("INSERT INTO `products`(`product_name`, `product_price`, `product_promotional_price`, `product_quantily`, `product_main_image`, `product_description`) VALUES (?,?,product_price,?,?,?);");
-        $sql->bind_param('sdiss', $product['product_name'],  $product['product_price'],  $product['product_quantily'],  $product['product_main_image'], $product['product_description']);
+        $sql = parent::$connection->prepare("INSERT INTO `products`(`product_name`, `product_price`, `product_promotional_price`, `product_quantity`, `product_main_image`, `product_description`) VALUES (?,?,product_price,?,?,?);");
+        $sql->bind_param('sdiss', $product['product_name'],  $product['product_price'],  $product['product_quantity'],  $product['product_main_image'], $product['product_description']);
         if (!$sql->execute()) {
             return -1;
         }
@@ -27,8 +27,8 @@ class ProductModel extends DB
     }
     public function updateProduct($product) // 
     {
-        $sql = parent::$connection->prepare("UPDATE `products` SET`product_name`=?,`product_price`=?,`product_promotional_price`=?,`product_quantily`=?,`product_main_image`=IF(?='', product_main_image,?),`product_description`=? WHERE id = ?;");
-        $sql->bind_param('sddisssi', $product['product_name'],  $product['product_price'],  $product['product_promotional_price'],  $product['product_quantily'], $product['product_main_image'],$product['product_main_image'], $product['product_description'],$product['id']);
+        $sql = parent::$connection->prepare("UPDATE `products` SET`product_name`=?,`product_price`=?,`product_promotional_price`=?,`product_quantity`=?,`product_main_image`=IF(?='', product_main_image,?),`product_description`=? WHERE id = ?;");
+        $sql->bind_param('sddisssi', $product['product_name'],  $product['product_price'],  $product['product_promotional_price'],  $product['product_quantity'], $product['product_main_image'],$product['product_main_image'], $product['product_description'],$product['id']);
         if (!$sql->execute()) {
             return -1;
         }
@@ -46,7 +46,7 @@ class ProductModel extends DB
     public function getProducts($numberPage, $perPage)
     {
         $numberPage = ($numberPage - 1) * $perPage;
-        $sql = parent::$connection->prepare("SELECT `id`, `product_name`, `product_price`, `product_quantily`, `product_main_image`,  `product_create_at` FROM `products`LIMIT ? , ?;");
+        $sql = parent::$connection->prepare("SELECT `id`, `product_name`, `product_price`, `product_quantity`, `product_main_image`,  `product_create_at` FROM `products`LIMIT ? , ?;");
         $sql->bind_param("ii", $numberPage, $perPage);
         return parent::select($sql);
     }

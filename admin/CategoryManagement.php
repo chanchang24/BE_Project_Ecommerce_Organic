@@ -46,7 +46,7 @@ $categories = $categoryModel->getCategories();
                                     </div>
                                     <div class="col-4">
                                         <div class="d-inline-block float-end"><a class="btn btn-success btn-sm"
-                                                                                 href="AddCategory">Thêm danh mục</a></div>
+                                                                                 href="AddCategory.php">Thêm danh mục</a></div>
                                     </div>
                                 </div>
                                 <table class="table table-bordered caption-top table-sm">
@@ -70,8 +70,8 @@ $categories = $categoryModel->getCategories();
                                                     <span class="fs-4"><?php echo $category['category_name']; ?></span>
                                                 </td>
                                                 <td>
-                                                    <div class="ratio ratio-4x3" style="max-width: 80px;">
-                                                        <div><img src="../public/images/category/<?php echo $category['category_image']; ?>"
+                                                    <div class="ratio ratio-4x3" >
+                                                        <div><img style="max-width: 80px;max-height: 70px;" src="../public/images/category/<?php echo $category['category_image']; ?>"
                                                                   class="img-thumbnail" alt="" sizes=""></div>
                                                     </div>
                                                 </td>
