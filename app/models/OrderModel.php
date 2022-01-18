@@ -57,7 +57,8 @@ class OrderModel extends DB
     public function updateRated($idOrder, $idProduct)
     {
         $sql = parent::$connection->prepare("UPDATE `order_item` SET `order_rated`= 1 WHERE order_id = ? AND order_product_id = ? LIMIT 1;;");
-        $sql->bind_param("ii", $idOrder,$idProduct);
+        $sql->bind_param("ii", $idOrder, $idProduct);
         return  $sql->execute();
     }
+   
 }

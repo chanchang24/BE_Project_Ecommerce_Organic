@@ -46,14 +46,14 @@ class ProductModel extends DB
     public function getProducts($numberPage, $perPage)
     {
         $numberPage = ($numberPage - 1) * $perPage;
-        $sql = parent::$connection->prepare("SELECT `id`, `product_name`, `product_price`, `product_quantily`, `product_main_image`,  `product_create_at` FROM `products`LIMIT ? , ?;");
+        $sql = parent::$connection->prepare("SELECT `id`, `product_name`, `product_price`, `product_promotional_price`, `product_quantily`, `product_main_image`, `product_create_at` FROM `products`LIMIT ? , ?;");
         $sql->bind_param("ii", $numberPage, $perPage);
         return parent::select($sql);
     }
     public function getNewProducts($numberPage, $perPage)
     {
         $numberPage = ($numberPage - 1) * $perPage;
-        $sql = parent::$connection->prepare("SELECT `id`, `product_name`, `product_price`, `product_quantily`, `product_main_image`,  `product_create_at`  FROM `products` ORDER BY product_create_at DESC  LIMIT ? , ?;");
+        $sql = parent::$connection->prepare("SELECT `id`, `product_name`, `product_price`, `product_quantily`,product_promotional_price, `product_main_image`,  `product_create_at`  FROM `products` ORDER BY product_create_at DESC  LIMIT ? , ?;");
         $sql->bind_param("ii", $numberPage, $perPage);
         return parent::select($sql);
     }
@@ -70,6 +70,19 @@ class ProductModel extends DB
         $key  = "%" . str_replace(" ", "%", $key) . "%";
         $sql = parent::$connection->prepare("SELECT COUNT(id) FROM `products` WHERE product_name LIKE ?  ;");
         $sql->bind_param("s", $key);
+        return parent::select_one($sql)['COUNT(id)'];
+    }
+    public function getProductsByIDCategory($numberPage, $perPage, $id)
+    {
+        $numberPage = ($numberPage - 1) * $perPage;
+        $sql = parent::$connection->prepare("SELECT * FROM `products` INNER JOIN category_product ON id = category_product.product_id WHERE category_product.category_id = ? LIMIT ? , ?;");
+        $sql->bind_param("iii", $id, $numberPage, $perPage);
+        return parent::select($sql);
+    }
+    public function getProductsCountByIDCategory($id)
+    {
+        $sql = parent::$connection->prepare("SELECT COUNT(id) FROM `products` INNER JOIN category_product ON id = category_product.product_id WHERE category_product.category_id = ?  ;");
+        $sql->bind_param("s", $id);
         return parent::select_one($sql)['COUNT(id)'];
     }
     public function getCategoriesProduct($idProduct)
@@ -142,5 +155,22 @@ class ProductModel extends DB
             . '   DESC'
             . '   LIMIT 8');
         return parent::select($sql);
+    }
+    public function getReViews($id)
+    {
+        $sql = parent::$connection->prepare("SELECT `id`, `product_id`, `product_review_content`, `product_review_rating`, `product_review_create_at`, `product_review_username` FROM `product_review` WHERE product_id =?");
+        $sql->bind_param("i", $id);
+        return  parent::select($sql);
+    }
+    public function getRelatedProducts($id)
+    {
+        $sql = parent::$connection->prepare("SELECT `id`, `product_name`, `product_price`, `product_promotional_price`, `product_quantily`, `product_main_image`, `product_create_at` FROM `products` INNER JOIN category_product ON product_id = id WHERE id != ? AND category_id IN (SELECT category_id FROM category_product WHERE category_product.product_id = ?   ) limit 4;");
+        $sql->bind_param("ii", $id, $id);
+        return  parent::select($sql);
+    }
+    public function getSaleProduct()
+    {
+        $sql = parent::$connection->prepare("SELECT `id`, `product_name`, `product_price`, `product_promotional_price`, `product_quantily`, `product_main_image`, ROUND(100 - product_promotional_price/product_price*100)  AS sale FROM `products` WHERE 100 - product_promotional_price/product_price*100 > 0 ORDER by (sale) DESC LIMIT 8;");
+        return  parent::select($sql);
     }
 }

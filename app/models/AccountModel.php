@@ -9,6 +9,14 @@ class AccountModel extends DB
         $sql->bind_param("ssss", $account['account_username'], $account['account_password'], $account['account_telephone'], $account['account_email']);
         return $sql->execute();
     }
+    
+    public function updatePassword($id,$password)
+    {
+        $pass = password_hash($password, PASSWORD_DEFAULT);
+        $sql = parent::$connection->prepare("UPDATE `accounts` SET `account_password`= ? WHERE id = ? LIMIT 1;");
+        $sql->bind_param("si",$pass ,$id);
+        return $sql->execute();
+    }
     public function isAvailableAccount($account)
     {
         $sql = parent::$connection->prepare("SELECT COUNT(*) FROM `accounts` WHERE account_username  = ? ;");
@@ -38,5 +46,16 @@ class AccountModel extends DB
         $sql = parent::$connection->prepare("SELECT * FROM `accounts` WHERE id = ? LIMIT 1;");
         $sql->bind_param('i', $id);
         return parent::select_one($sql);
+    }
+    public function getAccounts()
+    {
+        $sql = parent::$connection->prepare("SELECT accounts.id AS id, `account_username`,  `account_telephone`, `account_email`, `account_role_id`,role_name FROM `accounts` INNER JOIN role ON account_role_id = role.id WHERE 1 ORDER BY account_username ;");
+        return parent::select($sql);
+    }
+    public function setAdmin($id)
+    {
+        $sql = parent::$connection->prepare("UPDATE `accounts` SET `account_role_id`= 2 WHERE id = ? LIMIT 1;");
+        $sql->bind_param('i', $id);
+        return $sql->execute();
     }
 }

@@ -1,3 +1,11 @@
+<?php 
+if(session_status() !== PHP_SESSION_ACTIVE) session_start();
+if (!isset($_SESSION['account'])&&$_SESSION['account']['account_role_id']<2) {
+    header("Location: ../error404.php");
+    exit;
+}
+?>
+
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
     <a class="navbar-brand ps-3" href="../index.php">Ogani Shop</a>
@@ -9,7 +17,7 @@
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
                data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#!">Tài khoản</a></li>
+                <li><a class="dropdown-item" href="../account.php">Tài khoản</a></li>
                 <li>
                     <hr class="dropdown-divider" />
                 </li>
@@ -36,7 +44,7 @@
                     <a class="nav-link " href="OrderManagement.php">
                         <i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Quản lý đơn hàng
                     </a>
-                    <a class="nav-link " href="${pageContext.request.contextPath}/admin/user-management">
+                    <a class="nav-link " href="AccountManagement.php">
                         <i class="fa fa-users" aria-hidden="true"></i>&nbsp;Quản lý người dùng
                     </a>
                 </div>

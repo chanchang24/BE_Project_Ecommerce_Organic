@@ -21,7 +21,7 @@ $categoriesForNav = $categoryModel->getCategoriesForNav();
                         </div>
                         <ul>
                             <?php foreach ($categoriesForNav as $category) { ?>
-                                <li><a href="shop?idcategory=<?php echo $category['id'] ?>"><?php echo $category['category_name'] ?></a></li>
+                                <li><a href="shop?idCategory=<?php echo $category['id'] ?>"><?php echo $category['category_name'] ?></a></li>
                             <?php } ?>
                             <li class="font-weight-bold "><a href="shop.php"><i class="fa fa-caret-right" aria-hidden="true"></i> Xem tất cả</a></li>
                         </ul>
@@ -30,7 +30,7 @@ $categoriesForNav = $categoryModel->getCategoriesForNav();
                 <div class="col-lg-9">
                     <div class="hero__search">
                         <div class="hero__search__form">
-                            <form action="shop" method="get">
+                            <form action="shop.php" method="get">
                                 <input name="q" type="text" placeholder="Nhập tên sản phẩm bạn cần tìm?">
                                 <button type="submit" class="site-btn">SEARCH</button>
                             </form>

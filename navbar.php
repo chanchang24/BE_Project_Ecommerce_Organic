@@ -3,9 +3,6 @@ $account = [];
 if (isset($_SESSION['account'])) {
     $account = $_SESSION['account'];
 }
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -112,7 +109,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                     <div><i class="fa fa-user-circle-o" aria-hidden="true"></i> <?php echo $account['account_username'] ?></div>
                                     <span class="arrow_carrot-down"></span>
                                     <ul>
-                                        <li><a href="#"><?php echo $account['account_username'] ?></a></li>
+                                        <li><a href="account.php">Thông tin</a></li>
                                         <li><a href="logout.php">Đăng xuất</a></li>
                                     </ul>
                                 </div>

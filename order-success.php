@@ -5,25 +5,6 @@ spl_autoload_register(function ($classname) {
 });
 session_start();
 $fmt = numfmt_create('vi_VN', NumberFormatter::CURRENCY);
-$orderModel = new OrderModel();
-if (isset($_POST['order'])) {
-    $order = $_POST['order'];
-    $order += ["order_account_id" => $_SESSION['account']['id']];
-    $order += ["order_total_price" => $_SESSION['amount']];
-    $idOrder =  $orderModel->insertOrder($order);
-    foreach ($_SESSION['cart'] as $item) {
-        $orderItem = [
-            "order_id" => $idOrder,
-            "order_product_id" => $item["id"],
-            "order_product_name" => $item["product_name"],
-            "order_product_image" => $item["product_main_image"],
-            "order_product_price" => $item["product_promotional_price"],
-            "order_item_qty" => $item["product_quantily"]
-        ];
-        $orderModel->insertOrderItem($orderItem);
-    }
-    $_SESSION['cart'] = [];
-}
 ?>
 <!DOCTYPE html>
 <html>

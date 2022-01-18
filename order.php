@@ -141,7 +141,6 @@ if (isset($_SESSION['account'])) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:set var="index" scope="request" value="1" />
                                     <?php foreach ($order["items"] as $item) { ?>
                                         <tr>
 

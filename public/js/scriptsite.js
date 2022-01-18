@@ -58,7 +58,7 @@ function renderNewProdcuts(newProducts) {
             <div class="featured__item__text">
                 <h6><a href="#">${product.product_name}</a></h6>`
         if (product.product_price > product.product_promotional_price) {
-            html += `        <h5 class="text-danger"> ${product.product_promotional_price.toLocaleString('vi')}₫</h5><span class="text-muted" style="text-decoration-line: line-through;">${product.price.toLocaleString('vi')}₫</span>`
+            html += `        <h5 class="text-danger"> ${product.product_promotional_price.toLocaleString('vi')}₫</h5><span class="text-muted" style="text-decoration-line: line-through;">${product.product_price.toLocaleString('vi')}₫</span>`
         } else {
             html += `<h5>${product.product_price.toLocaleString('vi')}₫</h5>`
         }

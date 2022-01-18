@@ -5,10 +5,39 @@ spl_autoload_register(function ($classname) {
 });
 session_start();
 $fmt = numfmt_create('vi_VN', NumberFormatter::CURRENCY);
-$producModel = new ProductModel();
+$_SESSION['previousPageShop'] = $_SERVER['REQUEST_URI'];
+$perPage = 6;
+$currentPage = 1;
+$count = 0;
+$query = "";
+$q = "";
+$productModel = new ProductModel();
 $categoryModel = new CategoryModel();
+$products = [];
+if (isset($_GET['page'])) {
+    $currentPage  = $_GET['page'];
+}
+if (isset($_GET['q']) && !empty($_GET['q'])) {
+    $q = $_GET['q'];
+    $products = $productModel->getProductsByKey($currentPage, $perPage, $q);
+    $count = $productModel->getProductsCountByKey($q);
+} else {
+    if (isset($_GET['idCategory']) && !empty($_GET['idCategory'])) {
+        $idCategory = $_GET['idCategory'];
+        $products =  $productModel->getProductsByIDCategory($currentPage, $perPage, $idCategory);
+        $count =  $productModel->getProductsCountByIDCategory($idCategory);
+    } else {
+        $products = $productModel->getProducts($currentPage, $perPage);
+        $count = $productModel->getProductCount();
+    }
+}
 $categories = $categoryModel->getCategories();
-
+$saletProducts = $productModel->getSaleProduct();
+$queries = array();
+$maxPage = ceil($count / $perPage);
+parse_str($_SERVER['QUERY_STRING'], $queries);
+// var_dump($queries);
+// var_dump(http_build_query($queries));
 ?>
 <!DOCTYPE html>
 <html>
@@ -31,9 +60,9 @@ $categories = $categoryModel->getCategories();
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="breadcrumb__text">
-                        <h2>${product.name}</h2>
+                        <h2>Shop</h2>
                         <div class="breadcrumb__option">
-                            <a href="./">Home</a>
+                            <a href="index.php">Home</a>
                             <span>Shop</span>
                         </div>
                     </div>
@@ -48,14 +77,12 @@ $categories = $categoryModel->getCategories();
             <div class="row">
                 <div class="col-lg-3 col-md-5">
                     <div class="sidebar">
-                        <div class="sidebar__item" style="
-                                 min-height: 550px; margin-top: 600px
-                                 ">
+                        <div class="sidebar__item" style="    min-height: 550px; margin-top: 600px  ">
                             <h4>Danh mục</h4>
                             <ul>
-                                <c:forEach items="${categoriesAll}" var="category">
-                                    <li><a href="?idcategory=${category.id}">${category.name}</a></li>
-                                </c:forEach>
+                                <?php foreach ($categories as $category) {
+                                    echo '<li><a href="?idCategory=' . $category['id'] . '">' . $category['category_name'] . '</a></li>';
+                                } ?>
                             </ul>
                         </div>
                     </div>
@@ -67,32 +94,31 @@ $categories = $categoryModel->getCategories();
                         </div>
                         <div class="row">
                             <div class="product__discount__slider owl-carousel">
-                                <c:forEach items="${saleOffProducts}" var="product">
+                                <?php foreach ($saletProducts as $product) { ?>
                                     <div class="col-lg-4">
                                         <div class="product__discount__item">
-                                            <div class="product__discount__item__pic set-bg" data-setbg="./public/images/product/${product.image}">
-                                                <div class="product__discount__percent">${Math.ceil(100-(product.sale/product.price*100))}%</div>
+                                            <div class="product__discount__item__pic set-bg" data-setbg="./public/images/products/<?php echo $product['product_main_image'] ?>">
+                                                <div class="product__discount__percent"><?php echo $product['sale'] ?>%</div>
                                                 <ul class="product__item__pic__hover">
-                                                    <li><a href="${pageContext.request.contextPath}/shop-details?id=${product.id}" title="Xem chi tiết"><i class="fa fa-info-circle"></i></a></li>
-                                                    <c:if test="${product.total!=0}">
-                                                        <li>
-                                                            <a data-id="${product.id}" title="Thêm vào giỏ" style="cursor: pointer" class="btn-add-to-cart"><i class="fa fa-shopping-cart">
-                                                                </i></a>
-                                                        </li>
-                                                    </c:if>
+                                                    <li><a href="shop-details.php?id=<?php echo $product['id'] ?>" title="Xem chi tiết"><i class="fa fa-info-circle"></i></a></li>
+                                                    <?php if ($product['product_quantily'] > 0) { ?>
+                                                        <li> <a data-id="<?php echo $product['id'] ?>" title="Thêm vào giỏ" style="cursor: pointer" class="btn-add-to-cart"><i class="fa fa-shopping-cart"></i></a> </li>
+                                                                <?php } ?>
+                                                       
                                                 </ul>
                                             </div>
                                             <div class="product__discount__item__text">
-                                                <h5><a href="${pageContext.request.contextPath}/shop-details?id=${product.id}">${product.name}</a></h5>
+                                                <h5><a href="shop-details.php?id=<?php echo $product['id'] ?>"><?php echo $product['product_name'] ?></a></h5>
                                                 <div class="product__item__price">
-                                                    <fmt:formatNumber value="${product.sale}" type="currency" /><span>
-                                                        <fmt:formatNumber value="${product.price}" type="currency" />
+                                                    <?php echo numfmt_format_currency($fmt, $product['product_promotional_price'], "VND"); ?>
+                                                    <span>
+                                                        <?php echo numfmt_format_currency($fmt, $product['product_price'], "VND"); ?>
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </c:forEach>
+                                <?php } ?>
                             </div>
 
                         </div>
@@ -110,9 +136,9 @@ $categories = $categoryModel->getCategories();
                             </div>
                             <div class="col-lg-4 col-md-4">
                                 <div class="filter__found">
-                                    <c:if test="${q!=null&&!q.isEmpty()}">
-                                        <h6><span>${products.size()}</span> sản phẩm được tìm thấy</h6>
-                                    </c:if>
+                                    <?php if (!empty($q)) {
+                                        echo ' <h6><span> ' . count($products) . '</span> sản phẩm được tìm thấy</h6>';
+                                    } ?>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-3">
@@ -124,61 +150,58 @@ $categories = $categoryModel->getCategories();
                         </div>
                     </div>
                     <div class="row">
-                        <c:forEach items="${products}" var="product">
+                        <?php foreach ($products as $product) { ?>
                             <div class="col-lg-4 col-md-6 col-sm-6">
                                 <div class="product__item">
-                                    <div class="product__item__pic set-bg" style="border: 1px solid #d2cfcf61;" data-setbg="./public/images/product/${product.image}">
+                                    <div class="product__item__pic set-bg" style="border: 1px solid #d2cfcf61;" data-setbg="./public/images/products/<?php echo  $product['product_main_image'] ?>">
                                         <ul class="product__item__pic__hover">
-                                            <li><a href="${pageContext.request.contextPath}/shop-details?id=${product.id}" title="Xem chi tiết"><i class="fa fa-info-circle"></i></a></li>
-                                            <c:if test="${product.total!=0}">
+                                            <li><a href="shop-details.php?id=<?php echo  $product['id'] ?>" title="Xem chi tiết"><i class="fa fa-info-circle"></i></a></li>
+                                            <?php if ($product['product_quantily'] > 0) { ?>
                                                 <li>
-                                                    <a data-id="${product.id}" title="Thêm vào giỏ" style="cursor: pointer" class="btn-add-to-cart"><i class="fa fa-shopping-cart">
+                                                    <a data-id="<?php echo  $product['id'] ?>" title="Thêm vào giỏ" style="cursor: pointer" class="btn-add-to-cart"><i class="fa fa-shopping-cart">
                                                         </i></a>
                                                 </li>
-                                            </c:if>
-
+                                            <?php } ?>
                                         </ul>
                                     </div>
                                     <div class="product__item__text">
-                                        <h6><a href="${pageContext.request.contextPath}/shop-details?id=${product.id}">${product.name}</a></h6>
-                                        <c:choose>
-                                            <c:when test="${product.price!=product.sale}">
-                                                <h5 class="text-danger">
-                                                    <fmt:formatNumber value="${product.sale}" type="currency" />
-                                                </h5><span class="text-muted" style="text-decoration-line: line-through;">
-                                                    <fmt:formatNumber value="${product.price}" type="currency" />
-                                                </span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <h5>
-                                                    <fmt:formatNumber value="${product.price}" type="currency" />
-                                                </h5>
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <h6><a href="shop-details.php?id=<?php echo  $product['id'] ?>"><?php echo  $product['product_name'] ?></a></h6>
+                                        <?php if ($product['product_price'] > $product['product_promotional_price']) { ?>
+                                            <h5 class="text-danger"> <?php echo numfmt_format_currency($fmt, $product['product_promotional_price'], "VND"); ?>
+                                            </h5><span class="text-muted" style="text-decoration-line: line-through;">
+                                                <?php echo numfmt_format_currency($fmt, $product['product_price'], "VND"); ?>
+                                            </span>
+                                        <?php } else { ?>
+
+                                            <h5>
+                                                <?php echo numfmt_format_currency($fmt, $product['product_price'], "VND"); ?>
+                                            </h5>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
-                        </c:forEach>
+                        <?php }; ?>
                     </div>
                     <div class="product__pagination">
-                        <c:if test="${currentPage!=1}">
-                            <a href="?${qsearch}page=${currentPage-1}"><i class="fa fa-long-arrow-left"></i></a>
-                        </c:if>
-                        <c:forEach var="i" begin="1" end="${maxPage}">
-                            <c:choose>
-                                <c:when test="${currentPage==i}">
-                                    <a href="?${qsearch}page=${i}" class="page-active">${i}</a>
-                                </c:when>
-                                <c:otherwise>
-                                    <a href="?${qsearch}page=${i}">${i}</a>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                        <c:if test="${currentPage<maxPage}">
-                            <a href="?${qsearch}page=${currentPage+1}"><i class="fa fa-long-arrow-right"></i></a>
-                        </c:if>
+                        <?php if ($currentPage > 1) {
+                            $queries['page'] = $currentPage - 1;
+                        ?>
+                            <a href="?<?php echo http_build_query($queries) ?>"><i class="fa fa-long-arrow-left"></i></a>
+                        <?php } ?>
+                        <?php for ($i = 1; $i <= $maxPage; $i++) {
+                            $queries['page'] = $i;
+                            if ($currentPage == $i) {
+                                echo '<a href="?' . http_build_query($queries) . '" class="page-active">' . $i . '</a> ';
+                            } else {
+                                echo '<a href="?' . http_build_query($queries) . '" >' . $i . '</a> ';
+                            }
+                        } ?>
+                        <?php if ($currentPage < $maxPage) {
+                            $queries['page'] = $currentPage + 1;
+                        ?>
+                            <a href="?<?php echo http_build_query($queries) ?>"><i class="fa fa-long-arrow-right"></i></a>
+                        <?php } ?>
                     </div>
-                    <c:remove var="qsearch" />
                 </div>
             </div>
         </div>
